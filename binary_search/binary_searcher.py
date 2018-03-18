@@ -1,38 +1,49 @@
-class BinarySearcher:
-    """A class that can find values in an array using a binary search"""
+def check_array_type(func):
+    """ Decorator that checks if an input is an array of numbers
 
-    @staticmethod
-    def find(array, value):
-        """Performs a binary search to find the index of a value in an array
-         
-        Arguments:
-            array- a sorted array of numbers
-            value- a number to look for in the array
-         
-        Returns:
-            the index (int) where the array equals the value, or -1 if the value is not in the array
-        """
-
-        # these are the cases where the value is not found in the array
-        if len(array) == 0 or (len(array) == 1 and array[0] != value):
-            return -1
-
-        # find the half way point of the array
-        halfway_index = int(round(len(array)/2))
-
-        # see if the halfway value is the value we want
-        if value == array[halfway_index]:
-            return halfway_index
-
-        # otherwise, check if value might be in first half and recurse with first half of the array
-        elif value < array[halfway_index]:
-            return BinarySearcher.find(array[:halfway_index], value)
-
-        # if not, value might be greater, so recurse with second half of the array
+    :param func: any input
+    :return: raises an exception if the input is not an array of numbers, or returns True if it is
+    """
+    def wrapper(*args, **kwargs):
+        arg = args[0]
+        if not isinstance(arg, list):
+            raise TypeError('Please provide a list as input.')
+        if all(isinstance(item, int) or isinstance(item, float) for item in arg):
+            return func(*args, **kwargs)
         else:
-            ret_val = BinarySearcher.find(array[halfway_index:], value)
-            # if the value was not found, just pass -1 back up
-            if ret_val < 0:
-                return ret_val
-            # otherwise, add the halfway index since we had split at this index earlier
-            return halfway_index + ret_val
+            raise TypeError('Please provide a list of all numbers')
+    return wrapper
+
+
+@check_array_type
+def binary_search(array, value):
+    """Performs a binary search to find the index of a value in an array
+
+     :param array: a sorted array of numbers
+     :param value: a number to look for in the array
+     :return: the first index (int) where the array equals the value, or -1 if the value is not in the array
+     """
+    low = 0
+    high = len(array)-1
+    while high >= low:
+        mid = (low + high) // 2
+        if value == array[mid]:
+            return get_first_index(array, mid, value)
+        elif value < array[mid]:
+            high = mid - 1
+        else:
+            low = mid + 1
+    return -1
+
+
+def get_first_index(array, index, value):
+    """ Helper function to find the first instance of a value once it is found in binary search
+    
+    :param array: a sorted array of numbers
+    :param index: the index of which an instance of the value was found
+    :param value: the value we are looking for
+    :return: the first index that a value appears in an array
+    """
+    if index > 0 and array[index-1] == value:
+        return get_first_index(array, index-1, value)
+    return index
