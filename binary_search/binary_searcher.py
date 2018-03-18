@@ -1,9 +1,13 @@
+from functools import wraps
+
+
 def check_array_type(func):
     """ Decorator that checks if an input is an array of numbers
 
-    :param func: any input
+    :param func: a function that expects an array as its first argument
     :return: raises an exception if the input is not an array of numbers, or returns True if it is
     """
+    @wraps(func)
     def wrapper(*args, **kwargs):
         arg = args[0]
         if not isinstance(arg, list):

@@ -10,11 +10,8 @@ Welcome to binary-search's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. module:: binary_search.binary_searcher
-
-.. autoclass:: BinarySearcher
+.. automodule:: binary_search.binary_searcher
     :members:
-
 
 Indices and tables
 ==================
